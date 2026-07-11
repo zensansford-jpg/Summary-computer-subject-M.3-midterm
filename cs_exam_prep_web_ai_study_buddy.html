@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Exam Prep & AI Study Buddy</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(30, 27, 75, 0.85);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen transition-colors duration-300 flex flex-col">
+
+<!-- Navigation Header -->
+<nav class="sticky top-0 z-50 glass-panel border-b border-purple-100 dark:border-purple-950 shadow-sm transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-purple-600 to-indigo-500 p-2.5 rounded-xl text-white shadow-lg shadow-purple-500/20">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-purple-600 to-indigo-500 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent">CS Study Buddy</span>
+                    <span class="block text-xs text-slate-500 dark:text-slate-400">วิทยาการคำนวณ ม.3 & ม.6</span>
+                </div>
+            </div>
+            
+            <!-- Desktop Tabs -->
+            <div class="hidden md:flex space-x-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+                <button onclick="switchTab('summary')" id="tab-btn-summary" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-white dark:bg-slate-800 shadow-sm text-purple-600 dark:text-purple-400">
+                    <i class="fa-solid fa-book-open mr-2"></i>สรุปเนื้อหา
+                </button>
+                <button onclick="switchTab('kanban')" id="tab-btn-kanban" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400">
+                    <i class="fa-solid fa-chart-simple mr-2"></i>บอร์ดคัมบังจำลอง
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-btn-quiz" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400">
+                    <i class="fa-solid fa-paste mr-2"></i>เก็งข้อสอบจริง
+                </button>
+                <button onclick="switchTab('ai')" id="tab-btn-ai" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400">
+                    <i class="fa-solid fa-robot mr-2"></i>AI Study Buddy
+                </button>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="flex items-center gap-2">
+                <button id="theme-toggle" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-500 dark:text-slate-400 transition-colors" title="เปลี่ยนธีม">
+                    <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-lg hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Navigation Bar -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-lg">
+    <div class="flex justify-around py-2">
+        <button onclick="switchTab('summary')" id="mobile-tab-btn-summary" class="mobile-tab-btn flex flex-col items-center gap-1 text-xs text-purple-600 dark:text-purple-400">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span>สรุปเนื้อหา</span>
+        </button>
+        <button onclick="switchTab('kanban')" id="mobile-tab-btn-kanban" class="mobile-tab-btn flex flex-col items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-chart-simple text-lg"></i>
+            <span>คัมบัง</span>
+        </button>
+        <button onclick="switchTab('quiz')" id="mobile-tab-btn-quiz" class="mobile-tab-btn flex flex-col items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-paste text-lg"></i>
+            <span>เก็งข้อสอบ</span>
+        </button>
+        <button onclick="switchTab('ai')" id="mobile-tab-btn-ai" class="mobile-tab-btn flex flex-col items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-robot text-lg"></i>
+            <span>คุยกับ AI</span>
+        </button>
+    </div>
+</div>
+
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 mb-16 md:mb-6">
+    <!-- Tab Section: Summary -->
+    <section id="tab-summary" class="space-y-6">
+        <!-- Hero/Header -->
+        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 sm:p-8 rounded-3xl shadow-xl shadow-purple-500/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="space-y-2">
+                <h1 class="text-2xl sm:text-3xl font-bold">สรุปเนื้อหาวิทยาการคำนวณ 🚀</h1>
+                <p class="text-purple-100 max-w-xl text-sm sm:text-base">รวมเนื้อหาหลักสูตร ม.3 (การสร้างแอปพลิเคชัน) และ ม.6 (การแบ่งปันข้อมูล) ย่อยมาให้เข้าใจได้ทันทีใน 5 นาที!</p>
+            </div>
+            <div class="relative w-full md:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-300"></i>
+                <input type="text" id="summary-search" placeholder="ค้นหาเนื้อหา..." oninput="searchSummary()" class="w-full bg-white/10 placeholder-purple-200 text-white rounded-2xl pl-10 pr-4 py-2.5 text-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/50 transition">
+            </div>
+        </div>
+
+        <!-- Grade Selector -->
+        <div class="flex gap-2">
+            <button onclick="toggleGrade('all')" id="grade-all" class="grade-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-purple-600 text-white">ทั้งหมด</button>
+            <button onclick="toggleGrade('m3')" id="grade-m3" class="grade-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-purple-300 text-slate-700 dark:text-slate-300">ม.3 (การสร้างแอปฯ)</button>
+            <button onclick="toggleGrade('m6')" id="grade-m6" class="grade-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-purple-300 text-slate-700 dark:text-slate-300">ม.6 (การแบ่งปันข้อมูล)</button>
+        </div>
+
+        <!-- Cards Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="summary-cards">
+            <!-- M3 Card 1: Application Development Stages -->
+            <div class="card-item summary-m3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-xs px-3 py-1.5 rounded-full font-bold">ม.3</span>
+                    <i class="fa-solid fa-laptop-code text-emerald-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-3">4 ขั้นตอนการพัฒนาแอปพลิเคชัน (หัวใจสำคัญ!)</h3>
+                <div class="space-y-4">
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <strong class="text-emerald-600 dark:text-emerald-400">1. การศึกษาความต้องการ:</strong> เป็นการหาความต้องการของผู้ใช้ ปัญหาเด่นที่สุดในขั้นตอนนี้คือ <span class="bg-red-100 dark:bg-red-950/50 px-1 rounded text-red-700 dark:text-red-300 font-bold">"การสื่อสารที่คลาดเคลื่อนระหว่างผู้ใช้และผู้พัฒนา"</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <strong class="text-emerald-600 dark:text-emerald-400">2. การออกแบบ (หัวใจสำคัญ!):</strong> เนื่องจากแอปฯ มีความซับซ้อน จึงต้องใช้ <span class="underline">แนวคิดเชิงคำนวณ (Computational Thinking)</span> มาออกแบบให้เป็นระบบ จะได้แก้ไขง่ายภายหลัง
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <strong class="text-emerald-600 dark:text-emerald-400">3. การสร้างแอปพลิเคชัน:</strong> ขั้นลงมือเขียนโปรแกรมตามที่ได้ดีไซน์ไว้ หากเจอข้อบกพร่องระหว่างสร้างก็ย้อนกลับไปวางแผนได้
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <strong class="text-emerald-600 dark:text-emerald-400">4. การทดสอบ:</strong> หาจุดผิดพลาด (Bug) และดีบักแก้ไข หากทดสอบไม่ดีก่อนใช้จริง อาจส่งผลเสียหายรุนแรงต่อผู้ใช้งานได้
+                    </div>
+                </div>
+            </div>
+
+            <!-- M3 Card 2: Agile & Kanban/Trello -->
+            <div class="card-item summary-m3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-xs px-3 py-1.5 rounded-full font-bold">ม.3</span>
+                    <i class="fa-solid fa-arrows-spin text-emerald-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-3">แนวคิดการทำงานแบบ Agile & คัมบัง (Kanban)</h3>
+                <div class="space-y-3">
+                    <div class="p-3.5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl border border-indigo-100/30">
+                        <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-1"><i class="fa-solid fa-rocket mr-2"></i>Agile Software Development</h4>
+                        <p class="text-sm">เน้นการปรับปรุงแก้ไขความต้องการของผู้ใช้ได้อย่างยืดหยุ่นและเป็นรอบการทำงานที่รวดเร็ว (Iterative) ไม่ยึดติดแผนการที่ปรับเปลี่ยนยาก</p>
+                    </div>
+                    <div class="p-3.5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl border border-indigo-100/30">
+                        <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-1"><i class="fa-solid fa-chalkboard mr-2"></i>กระดานคัมบัง (Kanban Board)</h4>
+                        <p class="text-sm">ช่วยเห็นภาพรวมการทำงาน แบ่งเป็น 3 เฟสพื้นฐาน: <strong>To do</strong> (จะทำ), <strong>Doing</strong> (กำลังทำ) และ <strong>Done</strong> (เสร็จแล้ว)</p>
+                    </div>
+                    <div class="p-3.5 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl border border-indigo-100/30">
+                        <h4 class="font-bold text-indigo-600 dark:text-indigo-400 mb-1"><i class="fa-solid fa-folder-open mr-2"></i>โปรแกรม Trello</h4>
+                        <p class="text-sm">เครื่องมือคัมบังยอดนิยม ฟรี! มีเครื่องมือเสริมความละเอียดอย่าง <strong>Labels (ป้ายสีบ่งบอกประเภทงาน/ระดับความสำคัญ)</strong> และ <strong>Checklist (รายการย่อยภายใต้การ์ดหลัก)</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- M6 Card 1: Communication & SMCR Model -->
+            <div class="card-item summary-m6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs px-3 py-1.5 rounded-full font-bold">ม.6</span>
+                    <i class="fa-solid fa-share-nodes text-indigo-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-3">องค์ประกอบสื่อสารตามโมเดล SMCR</h3>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-xl">
+                            <span class="block font-bold text-purple-600 dark:text-purple-400">S (Sender) ผู้ส่งสาร</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">ผู้ถ่ายทอดความคิด ทัศนคติ ความรู้ แหล่งกำเนิดสาร</span>
+                        </div>
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-xl">
+                            <span class="block font-bold text-purple-600 dark:text-purple-400">M (Message) สาร</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">เนื้อหา โครงสร้าง น้ำเสียง รหัสที่ต้องการส่ง</span>
+                        </div>
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-xl">
+                            <span class="block font-bold text-purple-600 dark:text-purple-400">C (Channel) ช่องทาง</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">ประสาทสัมผัส หรือ สื่อกลาง เช่น โทรศัพท์ การคุยต่อหน้า</span>
+                        </div>
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-xl">
+                            <span class="block font-bold text-purple-600 dark:text-purple-400">R (Receiver) ผู้รับสาร</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">ผู้ถอดรหัส เข้าใจสารได้ขึ้นกับภูมิหลัง ประสบการณ์</span>
+                        </div>
+                    </div>
+                    <div class="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <h4 class="font-bold text-sm text-slate-700 dark:text-slate-300">ความแตกต่างของรูปแบบสื่อ:</h4>
+                        <ul class="list-disc pl-5 text-xs text-slate-500 dark:text-slate-400 mt-1 space-y-1">
+                            <li><strong class="text-slate-700 dark:text-slate-300">สื่อตรง:</strong> มีปฏิสัมพันธ์เฉพาะตัว พูดคุยโต้ตอบทันที</li>
+                            <li><strong class="text-slate-700 dark:text-slate-300">สื่อมวลชน:</strong> ส่งทางเดียวสู่สาธารณะวงกว้าง (วิทยุ, ทีวี)</li>
+                            <li><strong class="text-slate-700 dark:text-slate-300">สื่อสังคม:</strong> ทุกคนสร้างสารได้ แก้ไขเปลี่ยนแปลงง่าย (Facebook, TikTok)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- M6 Card 2: Blogging & Call to Action -->
+            <div class="card-item summary-m6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="bg-indigo-100 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs px-3 py-1.5 rounded-full font-bold">ม.6</span>
+                    <i class="fa-solid fa-pen-nib text-indigo-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-3">การเขียนบล็อก (Blog) & เทคนิคกระตุ้นผู้อ่าน</h3>
+                <div class="space-y-4">
+                    <div class="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-100/20 text-sm">
+                        <strong class="text-amber-700 dark:text-amber-400 block mb-1">📝 โครงสร้างพื้นฐานบล็อก:</strong>
+                        <div class="grid grid-cols-5 text-center text-xs gap-1 font-bold">
+                            <div class="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm">หัวข้อหลัก</div>
+                            <div class="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm">หัวข้อรอง</div>
+                            <div class="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm">คำนำ</div>
+                            <div class="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm">เนื้อหา</div>
+                            <div class="p-1.5 bg-white dark:bg-slate-800 rounded shadow-sm">บทสรุป</div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-rose-50 dark:bg-rose-950/20 rounded-xl border border-rose-100/20 text-sm">
+                        <strong class="text-rose-700 dark:text-rose-400 block mb-1">📢 Call to Action (CTA):</strong>
+                        คือประโยคชักชวนให้ผู้เข้าชมทำตามเป้าหมายหลังจากอ่านจบ เช่น <span class="bg-rose-500 text-white px-2 py-0.5 rounded-lg text-xs font-semibold">"ทดลองใช้ฟรี"</span>, <span class="bg-rose-500 text-white px-2 py-0.5 rounded-lg text-xs font-semibold">"สมัครสมาชิกวันนี้"</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 text-xs">
+                        <strong class="text-slate-700 dark:text-slate-300 block mb-1">7 ลำดับขั้นตอนเขียนบล็อก:</strong>
+                        วางแผน ➡️ ค้นคว้า ➡️ ตรวจสอบข้อมูล ➡️ เขียนคำโปรย ➡️ ลงมือเขียน ➡️ ใช้ภาพประกอบ ➡️ ตรวจทานแก้ไข
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Section: Kanban Board -->
+    <section id="tab-kanban" class="hidden space-y-6">
+        <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <h2 class="text-xl font-bold mb-1"><i class="fa-solid fa-table-list mr-2 text-purple-600"></i>บอร์ดคัมบังจำลอง (Kanban Board Simulator)</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">ลองลากงานเพื่อทำความเข้าใจเฟสการทำงาน 3 เฟส: To do, Doing และ Done ซึ่งเป็นพื้นฐานสำคัญของ Agile และ Trello!</p>
+            
+            <div class="flex flex-wrap gap-2 mb-6">
+                <input type="text" id="new-task-title" placeholder="พิมพ์ชื่องานที่ต้องการเพิ่ม..." class="flex-grow bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <select id="new-task-label" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm">
+                    <option value="important">🔴 สำคัญมาก (Critical)</option>
+                    <option value="feature">🟢 ฟีเจอร์ใหม่ (Feature)</option>
+                    <option value="bug">🔵 บั๊กข้อผิดพลาด (Bug)</option>
+                </select>
+                <button onclick="addKanbanTask()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-all shadow-md shadow-purple-500/10">
+                    <i class="fa-solid fa-plus mr-1"></i>เพิ่มงาน
+                </button>
+            </div>
+
+            <!-- Kanban Columns Container -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Column: To do -->
+                <div class="bg-slate-100/70 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> To do (สิ่งที่จะทำ)
+                        </span>
+                        <span id="todo-count" class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-xs font-bold">0</span>
+                    </div>
+                    <div id="col-todo" class="space-y-3 min-h-[300px]" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+
+                <!-- Column: Doing -->
+                <div class="bg-purple-50/40 dark:bg-purple-950/10 p-4 rounded-2xl border border-purple-100/30 dark:border-purple-900/30">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-purple-700 dark:text-purple-300 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse"></span> Doing (กำลังทำ)
+                        </span>
+                        <span id="doing-count" class="bg-purple-100 dark:bg-purple-950 px-2 py-0.5 rounded text-xs font-bold text-purple-700 dark:text-purple-300">0</span>
+                    </div>
+                    <div id="col-doing" class="space-y-3 min-h-[300px]" ondragover="allowDrop(event)" ondrop="drop(event, 'doing')">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+
+                <!-- Column: Done -->
+                <div class="bg-emerald-50/40 dark:bg-emerald-950/10 p-4 rounded-2xl border border-emerald-100/30 dark:border-emerald-900/30">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Done (ทำเสร็จแล้ว)
+                        </span>
+                        <span id="done-count" class="bg-emerald-100 dark:bg-emerald-950 px-2 py-0.5 rounded text-xs font-bold text-emerald-700 dark:text-emerald-300">0</span>
+                    </div>
+                    <div id="col-done" class="space-y-3 min-h-[300px]" ondragover="allowDrop(event)" ondrop="drop(event, 'done')">
+                        <!-- Tasks inject here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Section: Interactive Quiz -->
+    <section id="tab-quiz" class="hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-100 dark:border-slate-800 shadow-sm max-w-3xl mx-auto">
+            <div id="quiz-intro-view" class="text-center space-y-6 py-6">
+                <div class="inline-flex bg-purple-100 dark:bg-purple-950 p-4 rounded-full text-purple-600 dark:text-purple-400 mb-2">
+                    <i class="fa-solid fa-award text-4xl"></i>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold">ชุดเก็งข้อสอบวิทยาการคำนวณ ม.3 & ม.6</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">แบบทดสอบจำนวน 10 ข้อ วัดผลเตรียมสอบความเข้าใจหลักการพัฒนาซอฟต์แวร์และวิทยาการข้อมูลอย่างตรงประเด็น!</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto text-left text-sm">
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-list-check text-purple-500 text-lg"></i>
+                        <div>
+                            <span class="block font-bold">10 ข้อ</span>
+                            <span class="text-xs text-slate-400">ครบทุกบทเรียน</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-bolt text-purple-500 text-lg"></i>
+                        <div>
+                            <span class="block font-bold">เฉลยละเอียด</span>
+                            <span class="text-xs text-slate-400">เข้าใจทันที</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="startQuiz()" class="w-full max-w-xs bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg transition-transform hover:-translate-y-0.5">
+                    เริ่มทำข้อสอบเลย!
+                </button>
+            </div>
+
+            <!-- Quiz Play View -->
+            <div id="quiz-play-view" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <span class="text-sm font-semibold text-slate-400">ข้อที่ <span id="current-question-num" class="text-purple-600 dark:text-purple-400 font-bold text-lg">1</span> / 10</span>
+                    <span id="quiz-score-badge" class="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-xs px-3 py-1.5 rounded-full font-bold">คะแนนสะสม: 0</span>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 id="question-text" class="text-lg font-bold leading-relaxed text-slate-800 dark:text-slate-100">ตัวอย่างคำถามวิทยาการคำนวณ</h3>
+                    <div class="grid grid-cols-1 gap-3" id="answer-options">
+                        <!-- Buttons for choices will be injected here -->
+                    </div>
+                </div>
+
+                <div id="explanation-box" class="hidden p-4 rounded-2xl text-sm transition-all duration-300">
+                    <!-- Feedback details -->
+                </div>
+
+                <div class="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <button id="next-question-btn" disabled onclick="nextQuestion()" class="bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold px-6 py-2.5 rounded-xl text-sm cursor-not-allowed transition">
+                        ถัดไป <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Result View -->
+            <div id="quiz-result-view" class="hidden text-center space-y-6 py-6">
+                <div class="inline-flex bg-indigo-100 dark:bg-indigo-950 p-6 rounded-full text-indigo-600 dark:text-indigo-400">
+                    <i class="fa-solid fa-trophy text-5xl"></i>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold">ยินดีด้วย ทำแบบสอบเสร็จเรียบร้อย!</h2>
+                    <p class="text-slate-500 dark:text-slate-400">คุณทำคะแนนได้ดีมาก มาดูคะแนนสุดท้ายของคุณกันเลย</p>
+                </div>
+                <div class="bg-gradient-to-tr from-purple-100 to-indigo-100 dark:from-purple-950 dark:to-indigo-950 p-6 rounded-2xl max-w-sm mx-auto border border-purple-200/50 dark:border-purple-900/50">
+                    <span class="block text-slate-500 dark:text-slate-400 text-sm font-semibold uppercase tracking-wider">คะแนนสอบของคุณคือ</span>
+                    <span class="text-5xl font-black text-purple-600 dark:text-purple-400"><span id="final-score">0</span>/10</span>
+                </div>
+                <div class="flex justify-center gap-3 max-w-xs mx-auto">
+                    <button onclick="resetQuiz()" class="flex-grow bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-3 px-4 rounded-xl transition hover:bg-slate-300 dark:hover:bg-slate-700 text-sm">
+                        <i class="fa-solid fa-rotate-right mr-1"></i>เริ่มทำใหม่
+                    </button>
+                    <button onclick="switchTab('ai')" class="flex-grow bg-purple-600 text-white font-bold py-3 px-4 rounded-xl transition hover:bg-purple-700 text-sm">
+                        <i class="fa-solid fa-robot mr-1"></i>คุยกับ AI ติวเพิ่ม
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Section: AI Study Buddy Chat -->
+    <section id="tab-ai" class="hidden flex flex-col md:grid md:grid-cols-3 gap-6 h-[calc(100vh-140px)] md:h-[650px]">
+        <!-- Instructions Panel -->
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col gap-4">
+            <div>
+                <h3 class="font-bold text-lg text-purple-600 dark:text-purple-400"><i class="fa-solid fa-seedling mr-2"></i>AI Study Buddy</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">นี่คือผู้ช่วยติวส่วนตัวที่ถูกเทรนด้วยข้อมูล "วิทยาการคำนวณ" (Big Data) จากตำราเรียน เพื่อตอบข้อสงสัย ออกข้อสอบเพิ่ม หรืออธิบายศัพท์ยากให้คุณแบบทันที</p>
+            </div>
+            
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">คำถามแนะนำที่คุยได้:</span>
+                <button onclick="askPreset('ออกแบบแอปฯ มีขั้นตอนอะไรบ้าง ย่อยให้หน่อย?')" class="w-full text-left text-xs p-2.5 bg-slate-50 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950/30 rounded-xl border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300 transition-all">
+                    💡 ออกแบบแอปฯ มีขั้นตอนอะไรบ้าง ย่อยให้หน่อย?
+                </button>
+                <button onclick="askPreset('SMCR Model คืออะไร สรุปให้ฟังสั้นๆ')" class="w-full text-left text-xs p-2.5 bg-slate-50 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950/30 rounded-xl border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300 transition-all">
+                    💡 SMCR Model คืออะไร สรุปให้ฟังสั้นๆ
+                </button>
+                <button onclick="askPreset('เก็งข้อสอบบทเรียน Agile หรือคัมบังให้ลองทำอีกสัก 1 ข้อหน่อย')" class="w-full text-left text-xs p-2.5 bg-slate-50 dark:bg-slate-800 hover:bg-purple-50 dark:hover:bg-purple-950/30 rounded-xl border border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-300 transition-all">
+                    📝 เก็งข้อสอบบทเรียน Agile หรือคัมบังให้ลองทำอีกสัก 1 ข้อหน่อย
+                </button>
+            </div>
+
+            <!-- Custom API Key input (Optional) -->
+            <div class="border-t border-slate-100 dark:border-slate-800 pt-4 mt-auto">
+                <label for="custom-key" class="block text-xs font-bold text-slate-400 mb-1">กุญแจ API (ใส่หรือไม่ใส่ก็ได้):</label>
+                <input type="password" id="custom-key" placeholder="ป้อน Gemini API Key ของคุณ..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500">
+                <p class="text-[10px] text-slate-400 mt-1">เว้นว่างไว้เพื่อใช้งานสิทธิ์ฟรีจาก Canvas ของระบบหลักได้โดยอัตโนมัติ</p>
+            </div>
+        </div>
+
+        <!-- Chat Main Area -->
+        <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden h-[450px] md:h-full">
+            <!-- Chat Head -->
+            <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-3">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                    <div>
+                        <span class="font-bold text-sm">AI Study Assistant</span>
+                        <span class="block text-[10px] text-slate-400">โมเดลประมวลผล Gemini 3.1 Flash</span>
+                    </div>
+                </div>
+                <button onclick="clearChatHistory()" class="text-xs text-slate-400 hover:text-red-500 transition-colors" title="ล้างแชท">
+                    <i class="fa-solid fa-trash-can mr-1"></i>ล้างแชท
+                </button>
+            </div>
+
+            <!-- Chat Message Window -->
+            <div id="chat-messages-window" class="flex-grow overflow-y-auto p-5 space-y-4">
+                <!-- Welcome Bot Message -->
+                <div class="flex gap-3 max-w-[85%]">
+                    <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+                        AI
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-3.5 text-sm space-y-1">
+                        <p>สวัสดีจ้าเพื่อน ๆ! ยินดีต้อนรับสู่ศูนย์การติวสอบอัจฉริยะ 📚👨‍💻</p>
+                        <p class="text-xs text-slate-500">ฉันจำหลักสูตรม.3 และม.6 จากไฟล์ที่ให้มาไว้ทั้งหมดแล้ว มีคำถามส่วนไหนที่ไม่เข้าใจ พิมพ์ถามเพื่ออธิบายขยายความได้เลย!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Inputs -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800">
+                <form id="chat-form" onsubmit="handleSendChat(event)" class="flex gap-2">
+                    <input type="text" id="chat-user-input" required placeholder="สอบถามเกี่ยวกับแอปพลิเคชัน, SMCR, Trello, บล็อก..." class="flex-grow bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold p-3 rounded-xl transition-all shadow-md shadow-purple-500/10">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="mt-auto py-6 text-center text-xs text-slate-400 border-t border-slate-100 dark:border-slate-900 bg-white dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4">
+        &copy; 2026 CS Study Buddy. สร้างขึ้นเพื่ออำนวยความสะดวกในการเรียนและทบทวนเตรียมสอบวิชาวิทยาการคำนวณ
+    </div>
+</footer>
+
+<!-- Toast Notifications UI -->
+<div id="toast-container" class="fixed top-20 right-4 z-[9999] space-y-2 pointer-events-none"></div>
+
+<!-- Custom Scripts and Database logic -->
+<script>
+// In-Memory Database / Context derived from the original uploaded PDF (the "big data")
+const TEXTBOOK_CONTEXT = `
+[CONTEXT วิทยาการคำนวณ]
+เรื่อง: การพัฒนาแอปพลิเคชัน (ระดับ ม.3)
+- การพัฒนาแอปพลิเคชันประกอบด้วย 4 ขั้นตอนหลัก:
+  1. การศึกษาความต้องการ (Requirements Gathering): ขั้นแรกที่ใช้สืบค้นหาความต้องการ ปัญหาสำคัญที่สุดคือ "การสื่อสารคลาดเคลื่อน" ระหว่างนักพัฒนาและผู้ใช้งาน
+  2. การออกแบบ (Design): ถือเป็น "หัวใจสำคัญ" ของการสร้าง เนื่องจากโครงสร้างระบบมีความซับซ้อน จึงนำ "แนวคิดเชิงคำนวณ" มาใช้ร่วมด้วย จะได้ตรวจสอบแก้ไขได้ง่ายขึ้น
+  3. การสร้างแอปพลิเคชัน (Development): การลงมือเขียนโค้ดตามแผนงาน สามารถวนกลับไปแก้แผนขั้นก่อนหน้าได้ถ้าเจอปัญหา
+  4. การทดสอบ (Testing): การตรวจหาบั๊ก (Bug) และดีบักเพื่อให้ระบบใช้งานได้ปลอดภัย หากข้ามขั้นตอนนี้จะส่งผลร้ายแรงต่อผู้ใช้
+- การพัฒนาซอฟต์แวร์สมัยใหม่แบบ Agile: ปรับปรุงความต้องการให้ยืดหยุ่น ทำงานเป็นรอบรวดเร็ว ยืดหยุ่นปรับเปลี่ยนตามผู้ใช้ได้รวดเร็ว
+- คัมบัง (Kanban): กระดานจำลองสถานะการทำงานยอดนิยมสำหรับ Agile เพื่อเพิ่มความเห็นภาพรวมของงาน มี 3 เฟสเด่น: To do (จะทำ) -> Doing (กำลังทำ) -> Done (เสร็จแล้ว)
+- Trello: เครื่องมือประยุกต์ทำบอร์ดคัมบังออนไลน์ที่มีชื่อเสียงและฟรี มีฟีเจอร์เด่นอย่าง Labels (ป้ายระบุสัญญะสีระดับความสำคัญหรือประเภทงานเช่น critical, bug, feature), Checklist (รายการตรวจสอบย่อยในแต่ละการ์ดหลัก), Due dates (เวลาสิ้นสุด)
+
+เรื่อง: การแบ่งปันข้อมูล (ระดับ ม.6)
+- โมเดลพื้นฐานการสื่อสาร SMCR (David Berlo Model):
+  1. S (Sender / Source) ผู้ส่งสาร: ผู้มีทัศนคติ ทักษะ ความรู้ ระดับสังคมในการริเริ่มการสื่อสาร
+  2. M (Message) สาร: เนื้อสาร รหัส น้ำเสียง โครงสร้างที่จะกระตุ้นผู้รับ
+  3. C (Channel) ช่องทาง: วิธีเดินทางของสารผ่านประสาทสัมผัส หรือสื่อกลางอื่น เช่น การพูดตรง การใช้โทรศัพท์ การฟัง วิทยุ
+  4. R (Receiver) ผู้รับสาร: ผู้ถอดรหัส ตีความสารตามภูมิหลัง ทัศนคติ และระดับความรู้ของตนเอง
+- รูปแบบการสื่อสาร:
+  - การสื่อสารโดยตรง (Direct Communication): โต้ตอบปฏิสัมพันธ์ระหว่างกันแบบส่วนตัว ทันที
+  - สื่อมวลชน (Mass Media): การส่งทางเดียวจากจุดเดียวไปยังกลุ่มผู้รับจำนวนมหาศาล (เช่น ทีวี วิทยุ)
+  - สื่อสังคม (Social Media): สื่อทางอินเทอร์เน็ตที่เปิดให้ทุกคนร่วมกันแก้ไข ปรับปรุง และสร้างสารขึ้นมาเองได้ง่าย สะดวก ทั่วถึง
+- การเขียนบล็อก (Blogging / Web-log):
+  - โครงสร้างบล็อก: หัวข้อหลัก (Title), หัวข้อรอง (Subtitle), ส่วนนำ/คำโปรย (Intro), ส่วนเนื้อหา (Body) และส่วนสรุป (Conclusion)
+  - CTA (Call to Action): ประโยคชักชวนให้ผู้เข้าชมทำสิ่งที่ผู้เขียนคาดหวัง เช่น "สมัครเลย", "แชร์ด่วน"
+  - 7 ขั้นตอนการเขียนบล็อก: 1. วางแผน -> 2. ค้นคว้า -> 3. ตรวจสอบข้อมูล -> 4. เขียนคำโปรย -> 5. ลงมือเขียน -> 6. ใช้ภาพประกอบ -> 7. ตรวจทานแก้ไข
+`;
+
+// Initial mock exam questions database
+const QUIZ_QUESTIONS = [
+    {
+        question: "ปัญหาสำคัญอันดับหนึ่งที่พบในขั้นตอนการศึกษาความต้องการ (ม.3) คืออะไร?",
+        options: [
+            "คอมพิวเตอร์ที่ใช้เขียนโปรแกรมสเปกต่ำเกินไป",
+            "การสื่อสารที่คลาดเคลื่อนระหว่างผู้ใช้และนักพัฒนา",
+            "เลือกสีสันของหน้าดีไซน์แอปฯ ไม่สวยงาม",
+            "การจัดการฐานข้อมูลไม่มีประสิทธิภาพ"
+        ],
+        answer: 1,
+        explain: "ในขั้นตอน 'การศึกษาความต้องการ' เป็นกุญแจสำคัญที่นักพัฒนากับลูกค้าต้องทำความเข้าใจกัน ปัญหาที่พบบ่อยและมีผลเสียร้ายแรงที่สุดคือการสื่อสารที่ไม่ตรงกัน ส่งผลให้แอปฯ ออกมาผิดแผน"
+    },
+    {
+        question: "เหตุใดขั้นตอน 'การออกแบบ (Design)' จึงได้รับยกย่องเป็นหัวใจสำคัญของการสร้างแอปฯ?",
+        options: [
+            "เพราะไม่ต้องเขียนโค้ดเลย ประหยัดค่าใช้จ่าย",
+            "เพราะเป็นขั้นตอนเดียวที่ได้ใช้เทคโนโลยี AI",
+            "เพราะระบบมีความซับซ้อน จึงต้องใช้แนวคิดเชิงคำนวณมาจัดระเบียบให้ปรับแก้ในอนาคตได้สะดวก",
+            "เพราะเป็นการลงมือนำแอปพลิเคชันขึ้นสู่สโตร์ให้ทดลองโหลด"
+        ],
+        answer: 2,
+        explain: "เนื่องจากระบบของแอปพลิเคชันมีความซับซ้อน การออกแบบอย่างเป็นระบบด้วย 'แนวคิดเชิงคำนวณ' จึงช่วยให้การลงรหัสเขียนโค้ดมีความราบรื่น และเวลากลับมาตรวจสอบแก้ไขจะทำได้รวดเร็วมาก"
+    },
+    {
+        question: "แนวคิดการพัฒนาแบบ Agile ต่างจากกระบวนการผลิตซอฟต์แวร์แบบดั้งเดิมอย่างไร?",
+        options: [
+            "Agile เน้นการเขียนคู่มือจำนวนเป็นพันๆ หน้าให้เสร็จก่อนเขียนโปรแกรม",
+            "Agile เน้นความยืดหยุ่น สามารถปรับเปลี่ยนความต้องการของผู้ใช้ในแต่ละรอบสั้นๆ ได้ดี",
+            "Agile บังคับให้นักพัฒนาเขียนภาษา Assembly เท่านั้นเพื่อความเร็ว",
+            "Agile ห้ามไม่ให้ผู้ใช้หรือลูกค้าเข้ามายุ่งเกี่ยวกับทีมนักพัฒนาโดยเด็ดขาด"
+        ],
+        answer: 1,
+        explain: "Agile Software Development มีแนวคิดแบบเป็นรอบและยืดหยุ่น เพื่อที่จะสามารถรับมือกับการเปลี่ยนแปลงความต้องการของตลาดหรือผู้ใช้ได้รวดเร็วที่สุด"
+    },
+    {
+        question: "หากต้องการแบ่งสถานะงานในบอร์ดคัมบัง (Kanban Board) ที่ใช้บริหารทีม ทั่วไปควรแบ่งเป็นกี่ช่องพื้นฐาน?",
+        options: [
+            "2 ช่อง: Start และ Stop",
+            "3 ช่อง: To do, Doing, Done",
+            "5 ช่อง: Plan, Code, Test, Release, Feedback",
+            "4 ช่อง: Input, Process, Output, Storage"
+        ],
+        answer: 1,
+        explain: "บอร์ดคัมบังพื้นฐานระดับเริ่มต้น จะแบ่งกระแสงานออกเป็น 3 สถานะที่ชัดเจนคือ To do (งานค้างที่ต้องทำ) -> Doing (งานที่กำลังดำเนินการ) -> Done (งานที่บรรลุเรียบร้อย)"
+    },
+    {
+        question: "ในแอปพลิเคชัน Trello สำหรับข้อความย่อยที่ไม่ต้องการแยกเป็นการ์ดใหม่ ควรบันทึกไว้ในส่วนใดเพื่อให้เป็นระเบียบ?",
+        options: [
+            "บันทึกไว้ใน Checklist ของการ์ดหลัก",
+            "ตั้งค่าเป็น Labels สัญลักษณ์สีกำกับบนการ์ด",
+            "เขียนไว้ในฟิลด์ Due date กำหนดเสร็จงาน",
+            "ส่งไฟล์แนบภาพประกอบอธิบายเพิ่มเติม"
+        ],
+        answer: 0,
+        explain: "หากงานย่อยนั้นมีความสำคัญน้อยเกินกว่าจะแยกเป็นหนึ่งการ์ดแยกเดี่ยว การเขียนรวบยอดไว้ใน 'Checklist (รายการตรวจสอบ)' ในการ์ดหลักจะช่วยประหยัดพื้นที่กระดานและดูแลง่ายกว่า"
+    },
+    {
+        question: "ตามโมเดลพื้นฐานการสื่อสาร SMCR ของ David Berlo ตัวอักษร S หมายถึงส่วนใด?",
+        options: [
+            "Social (สังคมสาธารณะ)",
+            "System (ระบบเครือข่ายส่งข้อมูล)",
+            "Sender / Source (ผู้ส่งสาร/แหล่งสาร)",
+            "Software (ซอฟต์แวร์ในการเข้ารหัสข้อมูล)"
+        ],
+        answer: 2,
+        explain: "SMCR ย่อมาจาก Sender (ผู้ส่งสาร), Message (สาร), Channel (ช่องทาง), และ Receiver (ผู้รับสาร) ดังนั้น S จึงหมายถึงผู้ส่งสารที่มีความรู้และทัศนคติที่ต้องการส่งออกไป"
+    },
+    {
+        question: "ข้อใดให้คำจำกัดความของ 'ช่องทาง (Channel)' ในโมเดลการสื่อสารได้ดีที่สุด?",
+        options: [
+            "ประสาทสัมผัส หรือ สื่อกลาง เช่น โทรศัพท์ การฟังวิทยุ",
+            "บุคคลผู้ตีความความหมายหลังจากได้รับข้อความมาเรียบร้อย",
+            "ตัวหนังสือและรหัสโครงสร้างที่ถูกสร้างเป็นคำพูด",
+            "ข้อมูลที่ถูกจัดเก็บไว้บนเซิร์ฟเวอร์ฐานข้อมูลขนาดใหญ่"
+        ],
+        answer: 0,
+        explain: "Channel คือช่องทางหรือเส้นทางเดินทางของสาร ทั้งประสาทสัมผัส (การได้ยิน การมองเห็น การลิ้มรส การสัมผัส การดมกลิ่น) หรือเครื่องมือเทคโนโลยี เช่น อินเทอร์เน็ต โทรศัพท์มือถือ"
+    },
+    {
+        question: "หากต้องการสร้างสื่อเพื่อส่งสารทางเดียวไปยังผู้รับกลุ่มใหญ่ที่สุดพร้อมกันโดยที่ไม่มีการโต้ตอบกลับ ควรเลือกรูปแบบใด?",
+        options: [
+            "การคุยโทรศัพท์สายตรงรายบุคคล",
+            "การสื่อสารมวลชน (Mass Media) เช่น วิทยุ โทรทัศน์",
+            "การโพสต์แสดงความคิดเห็นใต้บล็อกโซเชียล",
+            "การพูดคุยสนทนาแบบเผชิญหน้ากันในห้องทำงาน"
+        ],
+        answer: 1,
+        explain: "สื่อมวลชน (Mass Media) เช่น ทีวี วิทยุ หนังสือพิมพ์ เหมาะสำหรับการกระจายข่าวสารระดับแมส (กว้างขวางมาก) ในทิศทางเดียวจากต้นกำเนิดสาร"
+    },
+    {
+        question: "ข้อใดเป็นคำจำกัดความของ Call to Action (CTA) ในการสื่อสารผ่านบล็อก?",
+        options: [
+            "การจัดหน้าข้อความบทนำและเนื้อหาให้เหมาะสมกับมือถือ",
+            "การระบุแหล่งอ้างอิงเพื่อยืนยันว่าข้อมูลที่เราเขียนถูกต้องและปลอดภัย",
+            "ประโยคหรือข้อความชักชวนให้ผู้อ่านกระทำบางสิ่งตามที่เราหวังหลังอ่านจบ เช่น 'สมัครฟรีวันนี้'",
+            "การลบคอมเมนต์ที่ไม่พึงประสงค์ออกเพื่อรักษาทัศนคติของแชลแนล"
+        ],
+        answer: 2,
+        explain: "Call to Action (CTA) คือปุ่มหรือประโยคกระตุ้นการตัดสินใจของผู้อ่าน เช่น 'สั่งซื้อด่วน', 'ลงทะเบียนรับส่วนลดฟรี' ช่วยเปลี่ยนผู้อ่านให้กลายเป็นลูกค้าหรือผู้ใช้เป้าหมาย"
+    },
+    {
+        question: "ขั้นตอนที่ 3 ในลำดับการเขียนบล็อก 7 ขั้นตอนคือข้อใด?",
+        options: [
+            "ตรวจสอบข้อมูลให้ถูกต้อง (Verifying facts)",
+            "ลงมือร่างบทความเขียนเนื้อหา (Writing context)",
+            "วางแผนการจัดหาพื้นที่ (Planning hosts)",
+            "เลือกใช้สื่อภาพนิ่งประกอบการนำเสนอ (Choosing images)"
+        ],
+        answer: 0,
+        explain: "7 ขั้นตอนประกอบด้วย: 1.วางแผน -> 2.ค้นคว้า -> 3.ตรวจสอบข้อมูล (Verify) -> 4.เขียนคำโปรย -> 5.ลงมือเขียน -> 6.ใช้ภาพประกอบ -> 7.ตรวจทานแก้ไข ดังนั้น ขั้นที่สามคือการตรวจสอบข้อมูล"
+    }
+];
+
+// App State Management
+let currentTab = 'summary';
+let kanbanTasks = [
+    { id: 't1', title: 'ศึกษาแนวทางการใช้งาน Figma ของทีม ม.3', label: 'feature', column: 'todo' },
+    { id: 't2', title: 'ดีบักแก้ไขหน้า Login ของกลุ่ม', label: 'bug', column: 'doing' },
+    { id: 't3', title: 'ออกแบบข้อตกลงร่วมกันในการสื่อสารแบบ SMCR', label: 'important', column: 'done' }
+];
+let currentQuestionIndex = 0;
+let userScore = 0;
+let selectedOption = null;
+
+// DOM Elements
+const themeToggle = document.getElementById('theme-toggle');
+const tabBtnSummary = document.getElementById('tab-btn-summary');
+const tabBtnKanban = document.getElementById('tab-btn-kanban');
+const tabBtnQuiz = document.getElementById('tab-btn-quiz');
+const tabBtnAi = document.getElementById('tab-btn-ai');
+
+const mobileTabBtnSummary = document.getElementById('mobile-tab-btn-summary');
+const mobileTabBtnKanban = document.getElementById('mobile-tab-btn-kanban');
+const mobileTabBtnQuiz = document.getElementById('mobile-tab-btn-quiz');
+const mobileTabBtnAi = document.getElementById('mobile-tab-btn-ai');
+
+const tabSummary = document.getElementById('tab-summary');
+const tabKanban = document.getElementById('tab-kanban');
+const tabQuiz = document.getElementById('tab-quiz');
+const tabAi = document.getElementById('tab-ai');
+
+const toastContainer = document.getElementById('toast-container');
+
+// Light/Dark Theme Switcher logic
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+} else {
+    document.documentElement.classList.remove('dark');
+}
+
+themeToggle.addEventListener('click', () => {
+    if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.theme = 'light';
+        showToast('💡 เปลี่ยนเป็นโหมดสว่างแล้ว', 'info');
+    } else {
+        document.documentElement.classList.add('dark');
+        localStorage.theme = 'dark';
+        showToast('🌙 เปลี่ยนเป็นโหมดมืดแล้ว', 'info');
+    }
+});
+
+// Toast system helper
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `p-4 rounded-xl shadow-lg border text-sm flex items-center gap-2 pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0`;
+    
+    if (type === 'success') {
+        toast.className += ' bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200';
+    } else if (type === 'error') {
+        toast.className += ' bg-rose-50 dark:bg-rose-950/80 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200';
+    } else {
+        toast.className += ' bg-purple-50 dark:bg-purple-950/80 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200';
+    }
+    
+    toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i> <span>${message}</span>`;
+    toastContainer.appendChild(toast);
+    
+    // Animate In
+    setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+    }, 10);
+    
+    // Remove Toast
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// Switching active tabs
+function switchTab(tabName) {
+    currentTab = tabName;
+    
+    // Hide all tabs
+    tabSummary.classList.add('hidden');
+    tabKanban.classList.add('hidden');
+    tabQuiz.classList.add('hidden');
+    tabAi.classList.add('hidden');
+    
+    // Reset Desktop styling
+    const allTabs = [tabBtnSummary, tabBtnKanban, tabBtnQuiz, tabBtnAi];
+    allTabs.forEach(btn => {
+        btn.className = "tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400";
+    });
+    
+    // Reset Mobile styling
+    const allMobileTabs = [mobileTabBtnSummary, mobileTabBtnKanban, mobileTabBtnQuiz, mobileTabBtnAi];
+    allMobileTabs.forEach(btn => {
+        btn.className = "mobile-tab-btn flex flex-col items-center gap-1 text-xs text-slate-400";
+    });
+
+    // Show active tab
+    if (tabName === 'summary') {
+        tabSummary.classList.remove('hidden');
+        tabBtnSummary.className = "tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-white dark:bg-slate-800 shadow-sm text-purple-600 dark:text-purple-400";
+        mobileTabBtnSummary.className = "mobile-tab-btn flex flex-col items-center gap-1 text-xs text-purple-600 dark:text-purple-400";
+    } else if (tabName === 'kanban') {
+        tabKanban.classList.remove('hidden');
+        tabBtnKanban.className = "tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-white dark:bg-slate-800 shadow-sm text-purple-600 dark:text-purple-400";
+        mobileTabBtnKanban.className = "mobile-tab-btn flex flex-col items-center gap-1 text-xs text-purple-600 dark:text-purple-400";
+        renderKanban();
+    } else if (tabName === 'quiz') {
+        tabQuiz.classList.remove('hidden');
+        tabBtnQuiz.className = "tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-white dark:bg-slate-800 shadow-sm text-purple-600 dark:text-purple-400";
+        mobileTabBtnQuiz.className = "mobile-tab-btn flex flex-col items-center gap-1 text-xs text-purple-600 dark:text-purple-400";
+    } else if (tabName === 'ai') {
+        tabAi.classList.remove('hidden');
+        tabBtnAi.className = "tab-btn px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 bg-white dark:bg-slate-800 shadow-sm text-purple-600 dark:text-purple-400";
+        mobileTabBtnAi.className = "mobile-tab-btn flex flex-col items-center gap-1 text-xs text-purple-600 dark:text-purple-400";
+    }
+}
+
+// Local search in summary
+function searchSummary() {
+    const query = document.getElementById('summary-search').value.toLowerCase();
+    const cards = document.querySelectorAll('.card-item');
+    
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(query)) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+}
+
+// Filtering by Grade (M.3 / M.6 / All)
+function toggleGrade(grade) {
+    const cards = document.querySelectorAll('.card-item');
+    const btns = document.querySelectorAll('.grade-btn');
+    
+    // Style active button
+    btns.forEach(btn => {
+        btn.className = "grade-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-purple-300 text-slate-700 dark:text-slate-300";
+    });
+    
+    const activeBtn = document.getElementById(`grade-${grade}`);
+    activeBtn.className = "grade-btn px-4 py-2 rounded-xl text-sm font-semibold transition bg-purple-600 text-white";
+
+    // Show/Hide cards
+    cards.forEach(card => {
+        if (grade === 'all') {
+            card.classList.remove('hidden');
+        } else if (grade === 'm3') {
+            if (card.classList.contains('summary-m3')) card.classList.remove('hidden');
+            else card.classList.add('hidden');
+        } else if (grade === 'm6') {
+            if (card.classList.contains('summary-m6')) card.classList.remove('hidden');
+            else card.classList.add('hidden');
+        }
+    });
+}
+
+// Kanban Board logic & rendering
+function renderKanban() {
+    const todoCol = document.getElementById('col-todo');
+    const doingCol = document.getElementById('col-doing');
+    const doneCol = document.getElementById('col-done');
+    
+    // Clear lists
+    todoCol.innerHTML = '';
+    doingCol.innerHTML = '';
+    doneCol.innerHTML = '';
+    
+    let counts = { todo: 0, doing: 0, done: 0 };
+    
+    kanbanTasks.forEach(task => {
+        counts[task.column]++;
+        
+        const taskCard = document.createElement('div');
+        taskCard.id = task.id;
+        taskCard.className = 'bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm cursor-grab active:cursor-grabbing hover:border-purple-300 dark:hover:border-purple-500 transition-all';
+        taskCard.draggable = true;
+        taskCard.ondragstart = (e) => drag(e);
+        
+        let labelColor = 'bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300';
+        let labelText = 'บั๊ก (Bug)';
+        if (task.label === 'important') {
+            labelColor = 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300';
+            labelText = 'สำคัญวิกฤต';
+        } else if (task.label === 'feature') {
+            labelColor = 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300';
+            labelText = 'ฟีเจอร์แอปฯ';
+        }
+        
+        taskCard.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+                <span class="${labelColor} text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">${labelText}</span>
+                <button onclick="deleteKanbanTask('${task.id}')" class="text-slate-400 hover:text-red-500 text-xs transition">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+            <p class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 leading-snug">${task.title}</p>
+        `;
+        
+        if (task.column === 'todo') todoCol.appendChild(taskCard);
+        if (task.column === 'doing') doingCol.appendChild(taskCard);
+        if (task.column === 'done') doneCol.appendChild(taskCard);
+    });
+    
+    // Update counters
+    document.getElementById('todo-count').innerText = counts.todo;
+    document.getElementById('doing-count').innerText = counts.doing;
+    document.getElementById('done-count').innerText = counts.done;
+}
+
+function allowDrop(e) {
+    e.preventDefault();
+}
+
+function drag(e) {
+    e.dataTransfer.setData("text", e.target.id);
+}
+
+function drop(e, targetCol) {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData("text");
+    const taskObj = kanbanTasks.find(t => t.id === taskId);
+    if (taskObj) {
+        taskObj.column = targetCol;
+        renderKanban();
+        showToast('📦 ย้ายสถานะของงานแล้ว!', 'info');
+    }
+}
+
+function addKanbanTask() {
+    const titleInput = document.getElementById('new-task-title');
+    const labelSelect = document.getElementById('new-task-label');
+    
+    if (!titleInput.value.trim()) {
+        showToast('กรุณากรอกชื่องานของคุณ!', 'error');
+        return;
+    }
+    
+    const newTask = {
+        id: 't' + Date.now(),
+        title: titleInput.value.trim(),
+        label: labelSelect.value,
+        column: 'todo'
+    };
+    
+    kanbanTasks.push(newTask);
+    titleInput.value = '';
+    renderKanban();
+    showToast('สร้างงานใหม่บนกระดานสำเร็จแล้ว', 'success');
+}
+
+function deleteKanbanTask(taskId) {
+    kanbanTasks = kanbanTasks.filter(t => t.id !== taskId);
+    renderKanban();
+    showToast('ลบรายการงานเรียบร้อย', 'info');
+}
+
+// Quiz System Logic
+function startQuiz() {
+    currentQuestionIndex = 0;
+    userScore = 0;
+    
+    document.getElementById('quiz-intro-view').classList.add('hidden');
+    document.getElementById('quiz-result-view').classList.add('hidden');
+    document.getElementById('quiz-play-view').classList.remove('hidden');
+    
+    showQuestion();
+}
+
+function showQuestion() {
+    selectedOption = null;
+    document.getElementById('explanation-box').classList.add('hidden');
+    
+    const nextBtn = document.getElementById('next-question-btn');
+    nextBtn.disabled = true;
+    nextBtn.className = "bg-slate-300 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-semibold px-6 py-2.5 rounded-xl text-sm cursor-not-allowed transition";
+    
+    document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
+    document.getElementById('quiz-score-badge').innerText = `คะแนนสะสม: ${userScore}`;
+    
+    const currentQ = QUIZ_QUESTIONS[currentQuestionIndex];
+    document.getElementById('question-text').innerText = currentQ.question;
+    
+    const optionsContainer = document.getElementById('answer-options');
+    optionsContainer.innerHTML = '';
+    
+    currentQ.options.forEach((opt, idx) => {
+        const optBtn = document.createElement('button');
+        optBtn.className = `w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-purple-300 hover:bg-purple-50/20 dark:hover:bg-slate-800/50 text-sm font-medium transition-all flex items-center gap-3`;
+        optBtn.innerHTML = `
+            <span class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold text-xs shrink-0">${String.fromCharCode(65 + idx)}</span>
+            <span class="text-slate-700 dark:text-slate-200">${opt}</span>
+        `;
+        optBtn.onclick = () => selectOption(idx);
+        optionsContainer.appendChild(optBtn);
+    });
+}
+
+function selectOption(idx) {
+    if (selectedOption !== null) return; // Allow only one answer
+    
+    selectedOption = idx;
+    const currentQ = QUIZ_QUESTIONS[currentQuestionIndex];
+    const optionsContainer = document.getElementById('answer-options');
+    const buttons = optionsContainer.querySelectorAll('button');
+    const expBox = document.getElementById('explanation-box');
+    
+    const isCorrect = (idx === currentQ.answer);
+    
+    if (isCorrect) {
+        userScore++;
+        document.getElementById('quiz-score-badge').innerText = `คะแนนสะสม: ${userScore}`;
+        showToast('ถูกต้องเก่งมาก!', 'success');
+        
+        buttons[idx].className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20 text-sm font-medium flex items-center gap-3";
+        buttons[idx].querySelector('span').className = "w-7 h-7 flex items-center justify-center rounded-full bg-emerald-500 text-white font-bold text-xs shrink-0";
+    } else {
+        showToast('คำตอบยังไม่ถูกต้องนะ พยายามใหม่!', 'error');
+        
+        buttons[idx].className = "w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50/30 dark:bg-rose-950/20 text-sm font-medium flex items-center gap-3";
+        buttons[idx].querySelector('span').className = "w-7 h-7 flex items-center justify-center rounded-full bg-rose-500 text-white font-bold text-xs shrink-0";
+        
+        // Highlight correct answer
+        buttons[currentQ.answer].className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/10 text-sm font-medium flex items-center gap-3";
+    }
+    
+    // Render explanation details
+    expBox.className = `p-4 rounded-2xl text-sm border ${isCorrect ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-200' : 'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200'}`;
+    expBox.innerHTML = `
+        <div class="flex items-center gap-2 font-bold mb-1">
+            <i class="fa-solid ${isCorrect ? 'fa-circle-check text-emerald-500' : 'fa-circle-exclamation text-rose-500'}"></i>
+            <span>${isCorrect ? 'อธิบายอย่างละเอียด' : 'เฉลยคำตอบ'}</span>
+        </div>
+        <p class="text-xs leading-relaxed opacity-90">${currentQ.explain}</p>
+    `;
+    expBox.classList.remove('hidden');
+    
+    // Enable Next Button
+    const nextBtn = document.getElementById('next-question-btn');
+    nextBtn.disabled = false;
+    nextBtn.className = "bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition shadow-lg shadow-purple-500/15";
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < QUIZ_QUESTIONS.length) {
+        showQuestion();
+    } else {
+        // Show result view
+        document.getElementById('quiz-play-view').classList.add('hidden');
+        document.getElementById('quiz-result-view').classList.remove('hidden');
+        document.getElementById('final-score').innerText = userScore;
+    }
+}
+
+function resetQuiz() {
+    document.getElementById('quiz-result-view').classList.add('hidden');
+    document.getElementById('quiz-intro-view').classList.remove('hidden');
+}
+
+// AI Chatbot Study Buddy
+const chatHistory = [];
+
+async function handleSendChat(event) {
+    if (event) event.preventDefault();
+    
+    const userInput = document.getElementById('chat-user-input');
+    const userText = userInput.value.trim();
+    if (!userText) return;
+    
+    // Add user message to UI
+    appendMessage(userText, 'user');
+    userInput.value = '';
+    
+    // Add dummy typing indicator
+    const typingId = appendTypingIndicator();
+    
+    try {
+        const aiResponse = await callGeminiAPI(userText);
+        removeTypingIndicator(typingId);
+        appendMessage(aiResponse, 'bot');
+    } catch (err) {
+        removeTypingIndicator(typingId);
+        appendMessage('ขออภัยด้วยจ้า เกิดข้อผิดพลาดทางเทคนิค กรุณาลองใหม่อีกครั้ง หรือเช็คความพร้อมของการเชื่อมต่ออินเทอร์เน็ตนะ!', 'bot');
+        console.error(err);
+    }
+}
+
+function askPreset(promptText) {
+    document.getElementById('chat-user-input').value = promptText;
+    handleSendChat();
+}
+
+function appendMessage(text, sender) {
+    const container = document.getElementById('chat-messages-window');
+    const wrapper = document.createElement('div');
+    wrapper.className = `flex gap-3 max-w-[85%] ${sender === 'user' ? 'ml-auto flex-row-reverse' : ''}`;
+    
+    const avatar = document.createElement('div');
+    avatar.className = `flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400'}`;
+    avatar.innerText = sender === 'user' ? 'ME' : 'AI';
+    
+    const msgBox = document.createElement('div');
+    msgBox.className = `p-3.5 text-sm leading-relaxed rounded-2xl ${sender === 'user' ? 'bg-indigo-600 text-white rounded-tr-none shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-none shadow-sm'}`;
+    
+    // Basic Markdown formatting helper (bold text replacement)
+    let formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+        
+    msgBox.innerHTML = formattedText;
+    
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(msgBox);
+    container.appendChild(wrapper);
+    
+    // Scroll to bottom
+    container.scrollTop = container.scrollHeight;
+}
+
+function appendTypingIndicator() {
+    const container = document.getElementById('chat-messages-window');
+    const id = 'typing-' + Date.now();
+    
+    const wrapper = document.createElement('div');
+    wrapper.id = id;
+    wrapper.className = 'flex gap-3 max-w-[85%]';
+    
+    wrapper.innerHTML = `
+        <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">AI</div>
+        <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-3.5 text-sm flex items-center gap-1.5 text-slate-400">
+            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+            <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+        </div>
+    `;
+    
+    container.appendChild(wrapper);
+    container.scrollTop = container.scrollHeight;
+    return id;
+}
+
+function removeTypingIndicator(id) {
+    const element = document.getElementById(id);
+    if (element) element.remove();
+}
+
+function clearChatHistory() {
+    const container = document.getElementById('chat-messages-window');
+    container.innerHTML = `
+        <div class="flex gap-3 max-w-[85%]">
+            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 w-8 h-8 rounded-full flex items-center justify-center font-bold">
+                AI
+            </div>
+            <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-3.5 text-sm space-y-1">
+                <p>รีเซ็ตหน้าแชทเรียบร้อยจ้า! มีคำถามเพิ่มเติมพิมพ์ถามได้เลยน้า 📚</p>
+            </div>
+        </div>
+    `;
+    chatHistory.length = 0;
+    showToast('ล้างประวัติการติวร่วมกันแล้ว', 'info');
+}
+
+async function callGeminiAPI(promptText) {
+    const systemPrompt = `คุณเป็นติวเตอร์อัจฉริยะวิชาวิทยาการคำนวณและนักจัดการ Big Data แสนน่ารัก เป็นมิตรและอบอุ่น คุยอย่างสนุกสนานด้วยภาษาไทยที่เป็นกันเองกับเด็กมัธยมปลายและมัธยมต้น 
+    คุณจะใช้ข้อมูลด้านล่างนี้ซึ่งมาจากหลักสูตรเพื่ออธิบายและไขข้อสงสัยให้กับผู้ใช้ คุณต้องตอบคำถามอย่างถูกต้องตามเนื้อหานี้เท่านั้น และสามารถเขียนตัวอย่างข้อสอบเพิ่มเติม หรือประยุกต์บทเรียนให้เข้าใจง่ายขึ้นได้ 
+    
+    ข้อมูลตำราเรียน:
+    ${TEXTBOOK_CONTEXT}
+    
+    คำแนะนำการตอบ:
+    1. ใช้ภาษาที่เป็นกันเอง สดใส แนะนำเพื่อนๆ ได้เข้าใจง่าย
+    2. จัดรูปแบบความสวยงามด้วยลิสต์ข้อ หรือเน้นตัวหนาที่สำคัญด้วย **ข้อความ** เพื่อให้อ่านง่ายบนมือถือ
+    3. หากมีการอ้างอิงเรื่องขั้นตอนแอปพลิเคชัน ม.3 หรือ สื่อสาร ม.6 ให้บอกด้วยทุกครั้ง`;
+    
+    // Read optional custom key
+    let apiKey = document.getElementById('custom-key').value.trim();
+    
+    // API endpoint configured with model gemini-3-flash-preview as instructed
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+    
+    // Save history
+    chatHistory.push({ role: 'user', parts: [{ text: promptText }] });
+    
+    const payload = {
+        contents: chatHistory,
+        systemInstruction: {
+            parts: [{ text: systemPrompt }]
+        }
+    };
+    
+    let delay = 1000;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error?.message || `HTTP ${response.status}`);
+            }
+            
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+            const answerText = candidate?.content?.parts?.[0]?.text;
+            
+            if (answerText) {
+                // Save model response to history for contextual conversation
+                chatHistory.push({ role: 'model', parts: [{ text: answerText }] });
+                return answerText;
+            } else {
+                throw new Error("โครงสร้างผลลัพธ์ของ API ไม่ถูกต้อง");
+            }
+        } catch (e) {
+            console.warn(`การเรียกใช้ API ผิดพลาด (พยายามครั้งที่ ${attempt}/3): ${e.message}`);
+            if (attempt === 3) throw e;
+            await new Promise(r => setTimeout(r, delay));
+            delay *= 2; // Exponential backoff
+        }
+    }
+}
+</script>
+</body>
+</html>
